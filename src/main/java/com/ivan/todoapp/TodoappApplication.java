@@ -10,33 +10,21 @@ import java.time.LocalDateTime;
 
 
 @SpringBootApplication
-public class TodoappApplication implements CommandLineRunner {
+public class TodoappApplication {
+    @Autowired
+    private ToDoItemRepository repository;
 
-	@Autowired
-	private ToDoItemRepository repository;
+    public static void main(String[] args) {
+        SpringApplication.run(TodoappApplication.class, args);
+    }
 
-	public static void main(String[] args) {
-		SpringApplication.run(TodoappApplication.class, args);
-	}
+    @Bean
+    public CommandLineRunner loadData(ToDoItemRepository repository) {
+        return (args) -> {
+            repository.deleteAll();
+            repository.save(new ToDoItem("First task", false, LocalDateTime.now()));
+            repository.save(new ToDoItem("second task", false, LocalDateTime.now()));
 
-	public void run(String... args) throws Exception {
-
-		repository.deleteAll();
-
-		// save a couple of customers
-		repository.save(new ToDoItem("First task", false,LocalDateTime.now() ));
-		repository.save(new ToDoItem("second task", false, LocalDateTime.now()));
-
-
-		for (ToDoItem item : repository.findAll()) {
-			System.out.println(item);
-		}
-		for (ToDoItem item : repository.findAll()) {
-			item.isDone = true;
-			repository.save(item);
-		}
-		for (ToDoItem item : repository.findAll()) {
-			System.out.println(item);
-		}
-	}
+        };
+    }
 }
