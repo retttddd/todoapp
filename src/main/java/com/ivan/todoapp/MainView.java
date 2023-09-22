@@ -12,6 +12,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 @Route
@@ -23,8 +25,9 @@ public class MainView extends VerticalLayout {
 
         NewToDoItemDialog dialog = new NewToDoItemDialog(repository);
 
-
         Button button = new Button("new task", e -> dialog.open());
+        button.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        //Button button = new Button("new task", e -> dialog.open());
 
         Grid<ToDoItem> grid = new Grid<>(ToDoItem.class, false);
         add(grid, button, dialog);
@@ -74,6 +77,22 @@ public class MainView extends VerticalLayout {
 
              this.taskName = new TextField("task name");
             this.deadLine = new DatePicker("deadline");
+            LocalDate now = LocalDate.now(ZoneId.systemDefault());
+
+            deadLine.setMin(now);
+            deadLine.setMax(now.plusDays(32));
+            deadLine.setHelperText("Must be within 30 days from today or not yesterday bro wtf...");
+            deadLine.addValueChangeListener(event -> {
+                LocalDate value = deadLine.getValue();
+                String errorMessage = null;
+                if (value != null) {
+                    if (value.compareTo(deadLine.getMin()) < 0) {
+                        errorMessage = "Too early, choose another date";
+                    }
+                }
+                deadLine.setErrorMessage(errorMessage);
+            });
+
 
             VerticalLayout dialogLayout = new VerticalLayout(taskName,
                     deadLine);
