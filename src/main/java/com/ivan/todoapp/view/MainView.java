@@ -1,6 +1,7 @@
 package com.ivan.todoapp.view;
 
 
+import com.ivan.todoapp.SecurityService;
 import com.ivan.todoapp.model.ToDoItem;
 import com.ivan.todoapp.repository.ToDoItemRepository;
 import com.vaadin.flow.component.button.Button;
@@ -13,15 +14,19 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
+import jakarta.annotation.security.PermitAll;
 
 import java.util.List;
 
 @Route
+@PermitAll
 public class MainView extends VerticalLayout {
     private final ToDoItemRepository repository;
+    private final SecurityService securityService;
 
-    public MainView(ToDoItemRepository toDoItemRepository) {
+    public MainView(ToDoItemRepository toDoItemRepository, SecurityService securityService) {
         this.repository = toDoItemRepository;
+        this.securityService = securityService;
 
         Grid<ToDoItem> grid = new Grid<>(ToDoItem.class, false);
         grid.setAllRowsVisible(true);
