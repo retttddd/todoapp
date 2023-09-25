@@ -1,5 +1,6 @@
 package com.ivan.todoapp.view;
 
+import com.ivan.todoapp.SecurityService;
 import com.ivan.todoapp.model.ToDoItem;
 import com.ivan.todoapp.repository.ToDoItemRepository;
 import com.vaadin.flow.component.button.Button;
@@ -18,12 +19,14 @@ import java.time.ZoneId;
 
 class NewToDoItemDialog extends Dialog {
     private final ToDoItemRepository repository;
+    private final SecurityService securityService;
     private final Grid grid;
     private TextField taskName;
     private DatePicker deadLine;
 
-    public NewToDoItemDialog(ToDoItemRepository repository, Grid grid) {
+    public NewToDoItemDialog(ToDoItemRepository repository, SecurityService securityService, Grid grid) {
         this.repository = repository;
+        this.securityService = securityService;
 
         this.grid = grid;
 
@@ -41,8 +44,8 @@ class NewToDoItemDialog extends Dialog {
     private Button createSaveButton() {
 
         Button saveButton = new Button("Add", e -> {
-            this.repository.save(new ToDoItem(this.taskName.getValue(), false, this.deadLine.getValue().atStartOfDay()));
-            grid.setItems(this.repository.findAll());
+            this.repository.save(new ToDoItem(this.taskName.getValue(), false, this.deadLine.getValue().atStartOfDay(), securityService.getAuthenticatedUser().getUsername()));
+            grid.setItems(this.repository.findByOwner(securityService.getAuthenticatedUser().getUsername()));
             close();
             this.taskName.setValue("");
             this.deadLine.setValue(LocalDate.now(ZoneId.systemDefault()));

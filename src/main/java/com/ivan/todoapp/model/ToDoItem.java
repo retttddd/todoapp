@@ -13,14 +13,17 @@ public class ToDoItem {
     private Boolean isDone;
     private LocalDateTime deadLine;
 
+    private String owner;
+
 
     public ToDoItem() {
     }
 
-    public ToDoItem(String taskDescription, Boolean isDone, LocalDateTime deadLine) {
+    public ToDoItem(String taskDescription, Boolean isDone, LocalDateTime deadLine, String owner) {
         this.taskDescription = taskDescription;
         this.isDone = isDone;
         this.deadLine = deadLine;
+        this.owner = owner;
     }
 
     public String getId() {
@@ -53,6 +56,14 @@ public class ToDoItem {
 
     public void setDeadLine(LocalDateTime deadLine) {
         this.deadLine = deadLine;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
     @Override

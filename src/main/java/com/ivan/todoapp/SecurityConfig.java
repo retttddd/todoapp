@@ -1,4 +1,5 @@
 package com.ivan.todoapp;
+
 import com.ivan.todoapp.view.LoginView;
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +18,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 public class SecurityConfig extends VaadinWebSecurity {
-
 
 
     @Override
