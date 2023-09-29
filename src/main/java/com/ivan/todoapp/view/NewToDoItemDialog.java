@@ -16,6 +16,8 @@ import com.vaadin.flow.component.textfield.TextField;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.LinkedList;
+import java.util.Queue;
 
 class NewToDoItemDialog extends Dialog {
     private final ToDoItemRepository repository;
@@ -23,6 +25,9 @@ class NewToDoItemDialog extends Dialog {
     private final Grid grid;
     private TextField taskName;
     private DatePicker deadLine;
+
+    private Queue<Notification> notificationQueue = new LinkedList<>();
+    private final int maxNotifications = 3;
 
     public NewToDoItemDialog(ToDoItemRepository repository, SecurityService securityService, Grid grid) {
         this.repository = repository;
@@ -44,7 +49,20 @@ class NewToDoItemDialog extends Dialog {
     private Button createSaveButton() {
 
         Button saveButton = new Button("Add", e -> {
-            this.repository.save(new ToDoItem(this.taskName.getValue(), false, this.deadLine.getValue().atStartOfDay(), securityService.getAuthenticatedUser().getUsername()));
+            String taskNameValue = this.taskName.getValue();
+            if (taskNameValue == null || taskNameValue.isEmpty()) {
+                showNotification("Provide name of this task!");
+                return;
+            }
+
+
+            LocalDate deadlineValue = this.deadLine.getValue();
+            if (deadlineValue == null) {
+                showNotification("Set Deadline!");
+                return;
+            }
+
+            this.repository.save(new ToDoItem(this.taskName.getValue(), false, this.deadLine.getValue(), securityService.getAuthenticatedUser().getUsername()));
             grid.setItems(this.repository.findByOwner(securityService.getAuthenticatedUser().getUsername()));
             close();
             this.taskName.setValue("");
@@ -58,6 +76,8 @@ class NewToDoItemDialog extends Dialog {
 
         return saveButton;
     }
+
+
 
     private VerticalLayout createDialogLayout() {
 
@@ -90,4 +110,22 @@ class NewToDoItemDialog extends Dialog {
 
         return dialogLayout;
     }
+
+    private void showNotification(String message) {
+        if (notificationQueue.size() >= maxNotifications) {
+            Notification oldestNotification = notificationQueue.poll();
+            if (oldestNotification != null) {
+                oldestNotification.close();
+            }
+        }
+
+
+        Notification notification = Notification.show(message);
+        notification.addThemeVariants(NotificationVariant.LUMO_CONTRAST);
+        notification.setPosition(Notification.Position.BOTTOM_CENTER);
+
+
+        notificationQueue.add(notification);
+    }
 }
+

@@ -2,6 +2,7 @@ package com.ivan.todoapp.model;
 
 import org.springframework.data.annotation.Id;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class ToDoItem {
@@ -11,7 +12,7 @@ public class ToDoItem {
 
     private String taskDescription;
     private Boolean isDone;
-    private LocalDateTime deadLine;
+    private LocalDate deadLine;
 
     private String owner;
 
@@ -19,7 +20,7 @@ public class ToDoItem {
     public ToDoItem() {
     }
 
-    public ToDoItem(String taskDescription, Boolean isDone, LocalDateTime deadLine, String owner) {
+    public ToDoItem(String taskDescription, Boolean isDone, LocalDate deadLine, String owner) {
         this.taskDescription = taskDescription;
         this.isDone = isDone;
         this.deadLine = deadLine;
@@ -50,11 +51,11 @@ public class ToDoItem {
         isDone = done;
     }
 
-    public LocalDateTime getDeadLine() {
+    public LocalDate getDeadLine() {
         return deadLine;
     }
 
-    public void setDeadLine(LocalDateTime deadLine) {
+    public void setDeadLine(LocalDate deadLine) {
         this.deadLine = deadLine;
     }
 
